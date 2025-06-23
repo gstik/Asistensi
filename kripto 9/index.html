@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Identitas Kelompok</title>
+  <style>
+    body {
+      font-family: Consolas, monospace;
+      background: linear-gradient(to right, #5c1a1b, #7b2d26);
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      color: #fff;
+      text-align: center;
+      margin-top: 40px;
+    }
+    form {
+      background: #fff;
+      max-width: 400px;
+      margin: 40px auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    input[type="text"], input[type="submit"] {
+      display: block;
+      width: 90%;
+      padding: 10px;
+      margin: 15px auto;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    input[type="submit"] {
+      background: #7b2d26;
+      color: white;
+      cursor: pointer;
+    }
+    input[type="submit"]:hover {
+      background: #5c1a1b;
+    }
+  </style>
+</head>
+<body>
+  <h1>Selamat Datang di Praktikum Kriptografi 9 2025</h1>
+  <form action="jawaban.php" method="post">
+    <label>Nama Panggilan Anggota (pisahkan koma):</label>
+    <input type="text" name="nama" required>
+    <label>3 Digit NIM:</label>
+    <input type="text" name="nim" maxlength="3" required>
+    <input type="submit" value="Lanjut">
+  </form>
+</body>
+</html>

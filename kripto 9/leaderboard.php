@@ -1,11 +1,41 @@
 <?php
-$leaderboard = file_exists("leaderboard.txt") ? file("leaderboard.txt", FILE_IGNORE_NEW_LINES) : [];
+require 'db.php';
+
+// Ambil dari database
+$stmt = $pdo->query("SELECT kelompok, nim, waktu_submit FROM users");
+$db_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Ambil dari file .txt
+$file_data = [];
+if (file_exists("leaderboard.txt")) {
+    $lines = file("leaderboard.txt", FILE_IGNORE_NEW_LINES);
+    foreach ($lines as $line) {
+        $parts = explode(" | ", $line);
+        $file_data[] = [
+            'kelompok' => $parts[0] ?? '-',
+            'nim' => $parts[1] ?? '-',
+            'waktu_submit' => $parts[2] ?? '-',
+            'source' => 'File'
+        ];
+    }
+}
+
+// Tandai data dari database
+foreach ($db_data as &$entry) {
+    $entry['source'] = 'Database';
+}
+
+// Gabung dan urutkan berdasarkan waktu_submit
+$merged = array_merge($db_data, $file_data);
+usort($merged, function($a, $b) {
+    return strtotime($a['waktu_submit']) <=> strtotime($b['waktu_submit']);
+});
 ?>
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Leaderboard KDJK 2025</title>
+  <title>🏆 Leaderboard Hybrid 2025 🏆</title>
   <style>
     body {
       font-family: Consolas, monospace;
@@ -21,7 +51,7 @@ $leaderboard = file_exists("leaderboard.txt") ? file("leaderboard.txt", FILE_IGN
     .leaderboard {
       background: #fff;
       color: #000;
-      max-width: 600px;
+      max-width: 800px;
       margin: auto;
       padding: 20px;
       border-radius: 10px;
@@ -34,44 +64,42 @@ $leaderboard = file_exists("leaderboard.txt") ? file("leaderboard.txt", FILE_IGN
     th, td {
       padding: 10px;
       border-bottom: 1px solid #ccc;
-      text-align: left;
     }
     th {
       background-color: #f2f2f2;
     }
-    .empty {
-      text-align: center;
-      font-style: italic;
-      color: #555;
+    .source {
+      font-size: 0.85em;
+      color: #666;
     }
   </style>
 </head>
 <body>
 
-  <h1>🏆 Leaderboard Kriptografi Hashing 2025 🏆</h1>
+  <h1>🏆 Leaderboard Kriptografi Hybrid 2025 🏆</h1>
 
   <div class="leaderboard">
-    <?php if (count($leaderboard) > 0): ?>
-      <table>
-        <tr>
-          <th>#</th>
-          <th>Kelompok</th>
-          <th>NIM</th>
-          <th>Waktu</th>
-        </tr>
-        <?php foreach ($leaderboard as $i => $entry): 
-          $parts = explode(" | ", $entry);
-          ?>
-          <tr>
-            <td><?= $i + 1 ?></td>
-            <td><?= htmlspecialchars($parts[0] ?? '-') ?></td>
-            <td><?= htmlspecialchars($parts[1] ?? '-') ?></td>
-            <td><?= htmlspecialchars($parts[2] ?? '-') ?></td>
-          </tr>
-        <?php endforeach; ?>
-      </table>
+    <?php if (count($merged) > 0): ?>
+    <table>
+      <tr>
+        <th>#</th>
+        <th>Kelompok</th>
+        <th>NIM</th>
+        <th>Waktu Submit</th>
+        <th>Sumber</th>
+      </tr>
+      <?php foreach ($merged as $i => $entry): ?>
+      <tr>
+        <td><?= $i + 1 ?></td>
+        <td><?= htmlspecialchars($entry['kelompok'] ?? '-') ?></td>
+        <td><?= htmlspecialchars($entry['nim'] ?? '-') ?></td>
+        <td><?= htmlspecialchars($entry['waktu_submit'] ?? '-') ?></td>
+        <td class="source"><?= $entry['source'] ?></td>
+      </tr>
+      <?php endforeach; ?>
+    </table>
     <?php else: ?>
-      <p class="empty">Belum ada tim yang berhasil 😿</p>
+      <p style="text-align: center; font-style: italic;">Belum ada data yang masuk 😅</p>
     <?php endif; ?>
   </div>
 

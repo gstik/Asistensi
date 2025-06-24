@@ -2,10 +2,10 @@
 session_start();
 require 'db.php';
 
-if (!isset($_SESSION['is_admin'])) {
-  header("Location: login.php");
-  exit();
-}
+//if (!isset($_SESSION['is_admin'])) {
+  //header("Location: login.php");
+  //exit();
+//}
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['reset'])) {
     file_put_contents("leaderboard.txt", "");
@@ -57,7 +57,14 @@ usort($merged, function ($a, $b) {
     }
     h1 {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 10px;
+    }
+    .admin-label {
+      text-align: center;
+      font-size: 0.95em;
+      font-style: italic;
+      color: #fdf5d3;
+      margin-bottom: 20px;
     }
     .leaderboard {
       background: #fff;
@@ -95,6 +102,10 @@ usort($merged, function ($a, $b) {
 <body>
 
   <h1>🏆 Leaderboard Kriptografi Hash 2025 🏆</h1>
+
+  <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true): ?>
+    <p class="admin-label">👩‍💼 Login sebagai: Admin TiKA</p>
+  <?php endif; ?>
 
   <div class="leaderboard">
 
@@ -142,7 +153,9 @@ usort($merged, function ($a, $b) {
     <p style="text-align: center; margin-top: 20px;">
       <a href="logout.php" style="color:#444; font-size:0.9em;">🚪 Logout Admin</a>
     </p>
-
+<p style="text-align:center; font-size:0.9em; color:#eee; margin-top:-10px;">
+  Halaman ini bisa dilihat publik. Hanya Admin yang bisa mengatur ☝️😾.
+</p>
   </div>
 
   <footer>

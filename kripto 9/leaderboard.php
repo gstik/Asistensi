@@ -1,5 +1,11 @@
 <?php
+session_start();
 require 'db.php';
+
+if (!isset($_SESSION['is_admin'])) {
+  header("Location: login.php");
+  exit();
+}
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['reset'])) {
     file_put_contents("leaderboard.txt", "");
@@ -79,6 +85,11 @@ usort($merged, function ($a, $b) {
     tr:nth-child(even) {
       background-color: #f9f9f9;
     }
+    footer {
+      text-align: center;
+      color: #fff;
+      margin-top: 40px;
+    }
   </style>
 </head>
 <body>
@@ -108,9 +119,9 @@ usort($merged, function ($a, $b) {
         <?php foreach ($merged as $i => $entry): ?>
         <tr>
           <td><?= $i + 1 ?></td>
-          <td><?= htmlspecialchars($entry['kelompok'] ?? '-') ?></td>
-          <td><?= htmlspecialchars($entry['nim'] ?? '-') ?></td>
-          <td><?= htmlspecialchars($entry['waktu_submit'] ?? '-') ?></td>
+          <td><?= htmlspecialchars($entry['kelompok']) ?></td>
+          <td><?= htmlspecialchars($entry['nim']) ?></td>
+          <td><?= htmlspecialchars($entry['waktu_submit']) ?></td>
         </tr>
         <?php endforeach; ?>
       </tbody>
@@ -119,16 +130,22 @@ usort($merged, function ($a, $b) {
       <p style="text-align: center; font-style: italic;">Belum ada tim yang berhasil 😿</p>
     <?php endif; ?>
 
-    <form method="post" style="text-align: center; margin-top: 30px;">
-      <input type="submit" name="reset" value="🧹 Reset Leaderboard"
-             onclick="return confirm('Yakin mau kosongkan leaderboard?')"
-             style="background-color: #e6b800; border: none; padding: 10px 20px;
-                    font-weight: bold; border-radius: 6px; cursor: pointer;">
-    </form>
+    <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true): ?>
+      <form method="post" style="text-align: center; margin-top: 30px;">
+        <input type="submit" name="reset" value="🧹 Reset Leaderboard"
+               onclick="return confirm('Yakin mau kosongkan leaderboard?')"
+               style="background-color: #e6b800; border: none; padding: 10px 20px;
+                      font-weight: bold; border-radius: 6px; cursor: pointer;">
+      </form>
+    <?php endif; ?>
+
+    <p style="text-align: center; margin-top: 20px;">
+      <a href="logout.php" style="color:#444; font-size:0.9em;">🚪 Logout Admin</a>
+    </p>
 
   </div>
 
-  <footer style="text-align:center; color:#fff; margin-top:40px;">
+  <footer>
     <p style="font-size:0.9em;">⏳ <span id="clock">--:--:--</span> WIB</p>
   </footer>
 

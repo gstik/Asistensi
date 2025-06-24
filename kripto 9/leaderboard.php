@@ -150,9 +150,11 @@ usort($merged, function ($a, $b) {
       </form>
     <?php endif; ?>
 
-    <p style="text-align: center; margin-top: 20px;">
-      <a href="logout.php" style="color:#444; font-size:0.9em;">🚪 Logout Admin</a>
-    </p>
+   <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true): ?>
+  <p style="text-align: center; margin-top: 20px;">
+    <a href="logout.php" style="color:#444; font-size:0.9em;">🚪 Logout Admin</a>
+  </p>
+<?php endif; ?>
 <p style="text-align:center; font-size:0.9em; color:#eee; margin-top:-10px;">
   Halaman ini bisa dilihat publik. Hanya Admin yang bisa mengatur ☝️😾.
 </p>

@@ -2,16 +2,19 @@
 session_start();
 require 'db.php';
 
-// Ganti IP ini dengan IP kamu sendiri
+// Daftar IP yang diizinkan sebagai admin
 $allowed_ips = ["192.168.1.100", "192.168.1.101"]; // ganti sesuai jaringanmu
-if (in_array($_SERVER['REMOTE_ADDR'], $allowed_ips)) {
+
+// Cookie admin yang harus dimiliki
+define('ADMIN_COOKIE', 'cryforme');
+
+// Hanya aktifkan admin jika IP dan cookie cocok
+if (
+    in_array($_SERVER['REMOTE_ADDR'], $allowed_ips) &&
+    (isset($_COOKIE['admin_key']) && $_COOKIE['admin_key'] === ADMIN_COOKIE)
+) {
     $_SESSION['is_admin'] = true;
 }
-
-//if (!isset($_SESSION['is_admin'])) {
-  //header("Location: login.php");
-  //exit();
-//}
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['reset'])) {
     file_put_contents("leaderboard.txt", "");
@@ -154,16 +157,17 @@ usort($merged, function ($a, $b) {
                style="background-color: #e6b800; border: none; padding: 10px 20px;
                       font-weight: bold; border-radius: 6px; cursor: pointer;">
       </form>
+
+      <p style="text-align: center; margin-top: 20px;">
+        <a href="logout.php" style="color:#444; font-size:0.9em;">🚪 Logout Admin</a>
+      </p>
     <?php endif; ?>
 
-   <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true): ?>
-  <p style="text-align: center; margin-top: 20px;">
-    <a href="logout.php" style="color:#444; font-size:0.9em;">🚪 Logout Admin</a>
-  </p>
-<?php endif; ?>
-<p style="text-align:center; font-size:0.9em; color:#7b2d26; margin-top:-10px;">
-  Halaman ini bisa dilihat publik. Hanya Admin yang bisa mengatur ☝️😾.
-</p>
+    <p style="text-align:center; font-size:0.9em; color:#7b2d26; margin-top:-10px;">
+      <br><br>
+      Halaman ini bisa dilihat publik. Hanya Admin yang bisa mengatur ☝️😾.
+    </p>
+
   </div>
 
   <footer>

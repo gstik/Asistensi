@@ -1,0 +1,17 @@
+📝---=== READ ME ===---📝
+
+Tahap Tugas:
+----------------------------
+1. Menebak jenis hashing yang diberikan dan jenis file berdasarkan jenis hashing.
+2. Mencocokkan kode hash dengan jenis file yang ditemukan.
+3. Membuka isinya lalu mencoba meng-crack password dalam bentuk hash-nya menjadi plaintext.
+----------------------------
+spoiler: 
+hewan 5 huruf mamalia darat;
+algoritma kuat untuk cek file, algoritma lemah untuk password;
+isi teks password bisa berupa lowercase, uppercase, lowerupper.
+----------------------------
+❗=== contoh perintah membuat rainbowtable === ❗
+rtgen md5 loweralpha 1 5 0 2400 410000 0
+rtsort .
+----------------------------

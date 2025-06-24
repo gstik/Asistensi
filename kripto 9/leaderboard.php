@@ -1,11 +1,11 @@
 <?php
 session_start();
 require 'db.php';
-<p style="color:yellow; text-align:center;">
-  IP kamu: <?= $_SERVER['REMOTE_ADDR'] ?><br>
-  Cookie admin: <?= $_COOKIE['admin_key'] ?? '✖ (tidak ada)' ?><br>
-  Status admin: <?= $_SESSION['is_admin'] ? '✅' : '❌' ?>
-</p>
+
+// Debug Info
+$ip = $_SERVER['REMOTE_ADDR'];
+$cookie = $_COOKIE['admin_key'] ?? '✖ (tidak ada)';
+$status = (isset($_SESSION['is_admin']) && $_SESSION['is_admin']) ? '✅' : '❌';
 
 // Daftar IP yang diizinkan sebagai admin
 $allowed_ips = ["192.168.1.100", "192.168.1.101"]; // ganti sesuai jaringanmu
@@ -15,22 +15,24 @@ define('ADMIN_COOKIE', 'cryforme');
 
 // Hanya aktifkan admin jika IP dan cookie cocok
 if (
-    in_array($_SERVER['REMOTE_ADDR'], $allowed_ips) &&
-    (isset($_COOKIE['admin_key']) && $_COOKIE['admin_key'] === ADMIN_COOKIE)
+  in_array($ip, $allowed_ips) &&
+  isset($_COOKIE['admin_key']) &&
+  $_COOKIE['admin_key'] === ADMIN_COOKIE
 ) {
-    $_SESSION['is_admin'] = true;
+  $_SESSION['is_admin'] = true;
 }
 
+// Jika tombol reset ditekan
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['reset'])) {
-    file_put_contents("leaderboard.txt", "");
-    $pdo->exec("DELETE FROM users");
+  file_put_contents("leaderboard.txt", "");
+  $pdo->exec("DELETE FROM users");
 
-    $log_time = date("Y-m-d H:i:s");
-    $log_msg = "[RESET] oleh Admin | $log_time\n";
-    file_put_contents("reset_log.txt", $log_msg, FILE_APPEND);
+  $log_time = date("Y-m-d H:i:s");
+  $log_msg = "[RESET] oleh Admin | $log_time\n";
+  file_put_contents("reset_log.txt", $log_msg, FILE_APPEND);
 
-    header("Location: " . $_SERVER['PHP_SELF'] . "?reset=success");
-    exit();
+  header("Location: " . $_SERVER['PHP_SELF'] . "?reset=success");
+  exit();
 }
 
 // Ambil data dari database
@@ -40,21 +42,20 @@ $db_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Ambil data dari file .txt
 $file_data = [];
 if (file_exists("leaderboard.txt")) {
-    $lines = file("leaderboard.txt", FILE_IGNORE_NEW_LINES);
-    foreach ($lines as $line) {
-        $parts = explode(" | ", $line);
-        $file_data[] = [
-            'kelompok' => $parts[0] ?? '-',
-            'nim' => $parts[1] ?? '-',
-            'waktu_submit' => $parts[2] ?? '-'
-        ];
-    }
+  $lines = file("leaderboard.txt", FILE_IGNORE_NEW_LINES);
+  foreach ($lines as $line) {
+    $parts = explode(" | ", $line);
+    $file_data[] = [
+      'kelompok' => $parts[0] ?? '-',
+      'nim' => $parts[1] ?? '-',
+      'waktu_submit' => $parts[2] ?? '-'
+    ];
+  }
 }
 
+// Gabungkan & urutkan data
 $merged = array_merge($db_data, $file_data);
-usort($merged, function ($a, $b) {
-    return strtotime($a['waktu_submit']) <=> strtotime($b['waktu_submit']);
-});
+usort($merged, fn($a, $b) => strtotime($a['waktu_submit']) <=> strtotime($b['waktu_submit']));
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -111,13 +112,27 @@ usort($merged, function ($a, $b) {
       color: #fff;
       margin-top: 40px;
     }
+    .debug-info {
+      font-family: monospace;
+      font-size: 0.85em;
+      color: yellow;
+      text-align: center;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
 
+  <!-- Panel Debug -->
+  <div class="debug-info">
+    🔎 IP: <?= $ip ?> |
+    🔐 Cookie: <?= $cookie ?> |
+    👩‍💼 Status Admin: <?= $status ?>
+  </div>
+
   <h1>🏆 Leaderboard Kriptografi Hash 2025 🏆</h1>
 
-  <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true): ?>
+  <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']): ?>
     <p class="admin-label">👩‍💼 Login sebagai: Admin TiKA</p>
   <?php endif; ?>
 
@@ -155,7 +170,7 @@ usort($merged, function ($a, $b) {
       <p style="text-align: center; font-style: italic;">Belum ada tim yang berhasil 😿</p>
     <?php endif; ?>
 
-    <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true): ?>
+    <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']): ?>
       <form method="post" style="text-align: center; margin-top: 30px;">
         <input type="submit" name="reset" value="🧹 Reset Leaderboard"
                onclick="return confirm('Yakin mau kosongkan leaderboard?')"
@@ -172,7 +187,6 @@ usort($merged, function ($a, $b) {
       <br><br>
       Halaman ini bisa dilihat publik. Hanya Admin yang bisa mengatur ☝️😾.
     </p>
-
   </div>
 
   <footer>

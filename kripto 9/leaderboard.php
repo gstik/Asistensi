@@ -1,6 +1,18 @@
 <?php
 require 'db.php';
 
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['reset'])) {
+    file_put_contents("leaderboard.txt", "");
+    $pdo->exec("DELETE FROM users");
+
+    $log_time = date("Y-m-d H:i:s");
+    $log_msg = "[RESET] oleh Admin | $log_time\n";
+    file_put_contents("reset_log.txt", $log_msg, FILE_APPEND);
+
+    header("Location: " . $_SERVER['PHP_SELF'] . "?reset=success");
+    exit();
+}
+
 // Ambil data dari database
 $stmt = $pdo->query("SELECT kelompok, nim, waktu_submit FROM users");
 $db_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -19,9 +31,8 @@ if (file_exists("leaderboard.txt")) {
     }
 }
 
-// Gabungkan dan urutkan berdasarkan waktu
 $merged = array_merge($db_data, $file_data);
-usort($merged, function($a, $b) {
+usort($merged, function ($a, $b) {
     return strtotime($a['waktu_submit']) <=> strtotime($b['waktu_submit']);
 });
 ?>
@@ -75,6 +86,14 @@ usort($merged, function($a, $b) {
   <h1>🏆 Leaderboard Kriptografi Hash 2025 🏆</h1>
 
   <div class="leaderboard">
+
+    <?php if (isset($_GET['reset']) && $_GET['reset'] === 'success'): ?>
+      <p style="background-color: #dff0d8; color: #3c763d; text-align: center;
+                 padding: 10px; border-radius: 6px; margin-bottom: 20px;">
+        🧹 Leaderboard berhasil dikosongkan!
+      </p>
+    <?php endif; ?>
+
     <?php if (count($merged) > 0): ?>
     <table>
       <thead>
@@ -99,7 +118,31 @@ usort($merged, function($a, $b) {
     <?php else: ?>
       <p style="text-align: center; font-style: italic;">Belum ada tim yang berhasil 😿</p>
     <?php endif; ?>
+
+    <form method="post" style="text-align: center; margin-top: 30px;">
+      <input type="submit" name="reset" value="🧹 Reset Leaderboard"
+             onclick="return confirm('Yakin mau kosongkan leaderboard?')"
+             style="background-color: #e6b800; border: none; padding: 10px 20px;
+                    font-weight: bold; border-radius: 6px; cursor: pointer;">
+    </form>
+
   </div>
+
+  <footer style="text-align:center; color:#fff; margin-top:40px;">
+    <p style="font-size:0.9em;">⏳ <span id="clock">--:--:--</span> WIB</p>
+  </footer>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const jam = now.getHours().toString().padStart(2, '0');
+      const menit = now.getMinutes().toString().padStart(2, '0');
+      const detik = now.getSeconds().toString().padStart(2, '0');
+      document.getElementById("clock").textContent = `${jam}:${menit}:${detik}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
 
 </body>
 </html>

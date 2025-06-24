@@ -1,0 +1,6 @@
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  kelompok VARCHAR(100) NOT NULL,
+  nim VARCHAR(50) NOT NULL,
+  waktu_submit DATETIME NOT NULL
+);

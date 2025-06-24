@@ -1,11 +1,13 @@
 <?php
 session_start();
+date_default_timezone_set('Asia/Jakarta');
 
-$jawaban_benar = "kriptografi123"; // Ganti sesuai soal
+$jawaban_benar = "kriptografi123"; // Ganti sesuai soal kamu
 $jawaban_user = strtolower(trim($_POST['jawaban']));
 
+// Jika jawaban cocok
 if ($jawaban_user === $jawaban_benar) {
-  $timestamp = date("Y-m-d H:i:s");
+  $timestamp = date("Y-m-d H:i:s"); // Jam sesuai WIB
   $data = $_SESSION['nama'] . " | " . $_SESSION['nim'] . " | " . $timestamp . "\n";
   file_put_contents("leaderboard.txt", $data, FILE_APPEND);
   $status = "benar";
@@ -15,7 +17,7 @@ if ($jawaban_user === $jawaban_benar) {
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <title>Hasil Submit</title>
@@ -61,7 +63,6 @@ if ($jawaban_user === $jawaban_benar) {
 
     .btn:hover {
       background-color: #e6b800;
-
     }
   </style>
 </head>
@@ -69,10 +70,12 @@ if ($jawaban_user === $jawaban_benar) {
 
   <div class="card">
     <h2>😼🎉 Jawaban kalian benar! 100 poin 😼🎉</h2>
+    <p style="font-size:0.9em; color:#ccc;">
+      Tercatat pada: <?= $timestamp ?> WIB
+    </p>
     <br>
     <a class="btn" href="leaderboard.php">📊 Lihat Leaderboard 📊</a>
   </div>
 
 </body>
 </html>
-

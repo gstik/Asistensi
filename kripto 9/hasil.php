@@ -21,23 +21,58 @@ if ($jawaban_user === $jawaban_benar) {
   <title>Hasil Submit</title>
   <style>
     body {
-      font-family: Consolas, monospace;
-      background: linear-gradient(to right, #5c1a1b, #7b2d26);
-      color: white;
+      font-family: "Fira Code", Consolas, monospace;
+      background: linear-gradient(to right, #2e0f10, #601717);
+      color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .card {
+      background: #1c1c1c;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+      max-width: 500px;
       text-align: center;
-      padding-top: 100px;
     }
-    h2 {
-      font-size: 1.8em;
+
+    .card h2 {
+      margin-bottom: 20px;
+      font-size: 1.9em;
+      color: #ffe66d;
     }
-    a {
-      color: #ffd;
-      text-decoration: underline;
+
+    .btn {
+      background-color: #ffcc00;
+      color: #000;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #e6b800;
+
     }
   </style>
 </head>
 <body>
-  <h2>yeay benerr, 100 poin buat kelompok kalian 😼</h2>
-  <a href="leaderboard.php">Lihat Leaderboard</a>
+
+  <div class="card">
+    <h2>😼🎉 Jawaban kalian benar! 100 poin 😼🎉</h2>
+    <br>
+    <a class="btn" href="leaderboard.php">📊 Lihat Leaderboard 📊</a>
+  </div>
+
 </body>
 </html>
+

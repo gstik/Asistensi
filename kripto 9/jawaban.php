@@ -14,7 +14,7 @@ $error = isset($_GET['error']);
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Jawaban Soal</title>
+  <title>Jawaban</title>
   <style>
     body {
       font-family: Consolas, monospace;
@@ -33,6 +33,7 @@ $error = isset($_GET['error']);
       margin: 40px auto;
       padding: 30px;
       border-radius: 10px;
+      border: 3px solid #e6b800; /* Tambahkan ini */
       box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     }
     input[type="text"], input[type="submit"] {
@@ -51,24 +52,36 @@ $error = isset($_GET['error']);
     input[type="submit"]:hover {
       background: #5c1a1b;
     }
+    
     .error {
-      color: red;
+      color: #b20000;
+      background-color: #ffeaea;
+      border: 1px solid #ffb3b3;
+      padding: 10px;
+      border-radius: 6px;
+      margin: 10px auto;
+      width: 80%;
       text-align: center;
-      margin-top: -10px;
+      font-weight: bold;
+      font-size: 0.6em; /* ukuran dikecilin sedikit */
     }
   </style>
 </head>
 <body>
-  <h2>Jawaban Soal Kriptografi</h2>
-  
-  <?php if ($error): ?>
-    <p class="error">jawabannya kurang bener</p>
-  <?php endif; ?>
+
+  <h2>Hasil Crack Hash</h2>
 
   <form action="hasil.php" method="post">
     <label>Jawaban:</label>
-    <input type="text" name="jawaban" placeholder="Masukkan jawaban kalian di sini" required>
-    <input type="submit" value="Submit Jawaban">
+    <input type="text" name="jawaban" placeholder="Setor jawaban di sini!" required>
+
+    <?php if ($error): ?>
+      <div class="error">Jawabannya kurang bener, coba lagi ya! 😿</div>
+    <?php endif; ?>
+
+    <input type="submit" value="Bismillah, Submit. ">
   </form>
+
 </body>
 </html>
+

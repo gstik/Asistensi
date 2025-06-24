@@ -1,6 +1,11 @@
 <?php
 session_start();
 require 'db.php';
+<p style="color:yellow; text-align:center;">
+  IP kamu: <?= $_SERVER['REMOTE_ADDR'] ?><br>
+  Cookie admin: <?= $_COOKIE['admin_key'] ?? '✖ (tidak ada)' ?><br>
+  Status admin: <?= $_SESSION['is_admin'] ? '✅' : '❌' ?>
+</p>
 
 // Daftar IP yang diizinkan sebagai admin
 $allowed_ips = ["192.168.1.100", "192.168.1.101"]; // ganti sesuai jaringanmu

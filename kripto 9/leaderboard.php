@@ -2,6 +2,12 @@
 session_start();
 require 'db.php';
 
+// Ganti IP ini dengan IP kamu sendiri
+$allowed_ips = ["192.168.1.100", "192.168.1.101"]; // ganti sesuai jaringanmu
+if (in_array($_SERVER['REMOTE_ADDR'], $allowed_ips)) {
+    $_SESSION['is_admin'] = true;
+}
+
 //if (!isset($_SESSION['is_admin'])) {
   //header("Location: login.php");
   //exit();
@@ -155,7 +161,7 @@ usort($merged, function ($a, $b) {
     <a href="logout.php" style="color:#444; font-size:0.9em;">🚪 Logout Admin</a>
   </p>
 <?php endif; ?>
-<p style="text-align:center; font-size:0.9em; color:#eee; margin-top:-10px;">
+<p style="text-align:center; font-size:0.9em; color:#7b2d26; margin-top:-10px;">
   Halaman ini bisa dilihat publik. Hanya Admin yang bisa mengatur ☝️😾.
 </p>
   </div>

@@ -1,11 +1,11 @@
 <?php
 require 'db.php';
 
-// Ambil dari database
+// Ambil data dari database
 $stmt = $pdo->query("SELECT kelompok, nim, waktu_submit FROM users");
 $db_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Ambil dari file .txt
+// Ambil data dari file .txt
 $file_data = [];
 if (file_exists("leaderboard.txt")) {
     $lines = file("leaderboard.txt", FILE_IGNORE_NEW_LINES);
@@ -14,28 +14,22 @@ if (file_exists("leaderboard.txt")) {
         $file_data[] = [
             'kelompok' => $parts[0] ?? '-',
             'nim' => $parts[1] ?? '-',
-            'waktu_submit' => $parts[2] ?? '-',
-            'source' => 'File'
+            'waktu_submit' => $parts[2] ?? '-'
         ];
     }
 }
 
-// Tandai data dari database
-foreach ($db_data as &$entry) {
-    $entry['source'] = 'Database';
-}
-
-// Gabung dan urutkan berdasarkan waktu_submit
+// Gabungkan dan urutkan berdasarkan waktu
 $merged = array_merge($db_data, $file_data);
 usort($merged, function($a, $b) {
     return strtotime($a['waktu_submit']) <=> strtotime($b['waktu_submit']);
 });
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>🏆 Leaderboard Hybrid 2025 🏆</title>
+  <title>🏆 Leaderboard Kriptografi Hash 2025 🏆</title>
   <style>
     body {
       font-family: Consolas, monospace;
@@ -53,53 +47,57 @@ usort($merged, function($a, $b) {
       color: #000;
       max-width: 800px;
       margin: auto;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      padding: 25px;
+      border-radius: 12px;
+      border: 3px solid #e6b800;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
     }
     table {
       width: 100%;
       border-collapse: collapse;
     }
     th, td {
-      padding: 10px;
+      padding: 12px;
       border-bottom: 1px solid #ccc;
+      text-align: left;
     }
     th {
-      background-color: #f2f2f2;
+      background-color: #fdf5d3;
+      color: #000;
     }
-    .source {
-      font-size: 0.85em;
-      color: #666;
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
     }
   </style>
 </head>
 <body>
 
-  <h1>🏆 Leaderboard Kriptografi Hybrid 2025 🏆</h1>
+  <h1>🏆 Leaderboard Kriptografi Hash 2025 🏆</h1>
 
   <div class="leaderboard">
     <?php if (count($merged) > 0): ?>
     <table>
-      <tr>
-        <th>#</th>
-        <th>Kelompok</th>
-        <th>NIM</th>
-        <th>Waktu Submit</th>
-        <th>Sumber</th>
-      </tr>
-      <?php foreach ($merged as $i => $entry): ?>
-      <tr>
-        <td><?= $i + 1 ?></td>
-        <td><?= htmlspecialchars($entry['kelompok'] ?? '-') ?></td>
-        <td><?= htmlspecialchars($entry['nim'] ?? '-') ?></td>
-        <td><?= htmlspecialchars($entry['waktu_submit'] ?? '-') ?></td>
-        <td class="source"><?= $entry['source'] ?></td>
-      </tr>
-      <?php endforeach; ?>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Kelompok</th>
+          <th>NIM</th>
+          <th>Waktu Submit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($merged as $i => $entry): ?>
+        <tr>
+          <td><?= $i + 1 ?></td>
+          <td><?= htmlspecialchars($entry['kelompok'] ?? '-') ?></td>
+          <td><?= htmlspecialchars($entry['nim'] ?? '-') ?></td>
+          <td><?= htmlspecialchars($entry['waktu_submit'] ?? '-') ?></td>
+        </tr>
+        <?php endforeach; ?>
+      </tbody>
     </table>
     <?php else: ?>
-      <p style="text-align: center; font-style: italic;">Belum ada data yang masuk 😅</p>
+      <p style="text-align: center; font-style: italic;">Belum ada tim yang berhasil 😿</p>
     <?php endif; ?>
   </div>
 
